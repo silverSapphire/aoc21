@@ -1,23 +1,63 @@
 use std::fs;
 use std::io;
 use std::io::BufRead;
+use std::collections::HashMap;
 
 fn main() {
     let filename = "input.txt";
     let points = load_input(filename);
+    let map = plot_lines(points);
 
+    //Find danger points
+    let mut num_danger = 0;
+    for (_, &count) in &map {
+        if count >= 2 {
+            num_danger = num_danger + 1;
+        }
+    }
 
+    println!("There are {} danger points", num_danger);
 }
 
-fn plot_lines(points: Vec<((u32, u32), (u32, u32))>) {
+fn plot_lines(points: Vec<((u32, u32), (u32, u32))>) -> HashMap<(u32, u32), u32> {
+
+    let mut map: HashMap<(u32, u32), u32> = HashMap::new();
 
     for point in points {
-        if point.0.0 != point.1.0 && point.0.1 != point.1.1 {
+        let x1 = point.0.0;
+        let x2 = point.1.0;
+        let y1 = point.0.1;
+        let y2 = point.1.1;
+
+        //Diagonal
+        if x1 != x2 && y1 != y2 {
             continue;
         }
+        //Vertical
+        else if x1 == x2 {
+            let lower = if y1 < y2 {y1} else {y2};
+            let higher = if y1 < y2 {y2} else {y1};
 
-        
+            for i in lower..higher+1 {
+                let new_point = (x1, i);
+                let count = map.get(&new_point).unwrap_or(&0).clone();
+                map.insert(new_point, count+1);
+            }
+        }
+        //Horizontal
+        else {
+            let lower = if x1 < x2 {x1} else {x2};
+            let higher = if x1 < x2 {x2} else {x1};
+
+            for i in lower..higher+1 {
+                let new_point = (i, y1);
+                let count = map.get(&new_point).unwrap_or(&0).clone();
+                map.insert(new_point, count+1);
+            }
+        }
     }
+
+    map
 }
 
 fn load_input(filename: &str) -> Vec<((u32, u32), (u32, u32))> {
