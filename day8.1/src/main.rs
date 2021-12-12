@@ -4,7 +4,7 @@ use std::io::BufRead;
 
 fn main() {
     let filename = "input.txt";
-    let (patterns, digits) = load_input(filename);
+    let (_, digits) = load_input(filename);
 
     let unique_lens: [usize; 4] = [2, 4, 3, 7];
 
