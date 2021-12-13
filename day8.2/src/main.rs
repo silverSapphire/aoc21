@@ -10,26 +10,19 @@ fn main() {
     let mut sum = 0;
     for (i, p) in patterns.iter().enumerate() {
         let translations = translate(&p);
-        println!("--------------------");
-        println!("Translations are {:?}", translations);
 
         let mut output = String::new();
-        println!("{}", digits[i].len());
         for d in &digits[i] {
             for (key, val) in &translations {
                 if val.eq(&d) {
-                    println!("{} matches to {}", d, key);
                     output.push_str(key);
                 }
             }
         }
 
         let number = output.parse::<u32>().unwrap();
-        println!("The number is {}", number);
         sum = sum + number;
     }
-
-    println!("Sum is {}", sum);
 }
 
 fn translate(p: &Vec<String>) -> HashMap<&str, &str> {
